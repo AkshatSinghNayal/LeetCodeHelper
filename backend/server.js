@@ -16,6 +16,13 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "LeetCodeHelper backend is running",
+  });
+});
+
 app.use("/api/problems", problemRoutes);
 
 const PORT = process.env.PORT || 5000;
