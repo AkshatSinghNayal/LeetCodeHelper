@@ -67,17 +67,19 @@
 }
 
 .btn-logout {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: white;
+  background: #2563eb;
+  border: none;
+  color: #fff;
   border-radius: 6px;
   padding: 4px 12px;
   cursor: pointer;
   font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
 }
 
 .btn-logout:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #1d4ed8;
 }
 
 /* ── Form ── */
