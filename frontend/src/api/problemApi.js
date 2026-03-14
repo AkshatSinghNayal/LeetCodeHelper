@@ -13,7 +13,7 @@ export function addProblem(data) {
 }
 
 export function reviewProblem(id) {
-  return api.put(`/api/problems/${id}/review`);
+  return api.post(`/api/problems/${id}/review`);
 }
 
 export function getDueProblems() {
