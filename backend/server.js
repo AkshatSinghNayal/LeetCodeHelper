@@ -17,10 +17,21 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({
+  const clientUrl = (process.env.CLIENT_URL || "").trim();
+
+  // In production, open the frontend app when users hit the backend root URL.
+  if (process.env.NODE_ENV === "production" && clientUrl) {
+    return res.redirect(302, clientUrl);
+  }
+
+  return res.json({
     status: "ok",
     message: "LeetCodeHelper backend is running",
   });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
 app.use("/api/problems", problemRoutes);
