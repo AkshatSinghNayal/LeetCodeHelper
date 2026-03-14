@@ -10,7 +10,12 @@ function App() {
   const fetchProblems = async () => {
     try {
       const { data } = await getProblems();
-      setProblems(data);
+      const newestFirst = [...data].sort(
+        (a, b) =>
+          new Date(b.createdAt || b.solvedDate || 0) -
+          new Date(a.createdAt || a.solvedDate || 0)
+      );
+      setProblems(newestFirst);
     } catch (err) {
       console.error("Failed to fetch problems:", err);
     }
