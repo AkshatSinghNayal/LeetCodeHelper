@@ -7,6 +7,7 @@ const addProblem = async (req, res) => {
     const { name, link, difficulty, pattern, solvedDate } = req.body;
 
     const problem = new Problem({
+      userId: req.user.id,
       name,
       link,
       difficulty,
@@ -28,7 +29,7 @@ const addProblem = async (req, res) => {
 
 const getProblems = async (req, res) => {
   try {
-    const problems = await Problem.find().sort({ nextReviewDate: 1 });
+    const problems = await Problem.find({ userId: req.user.id }).sort({ nextReviewDate: 1 });
     res.json(problems);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -37,7 +38,10 @@ const getProblems = async (req, res) => {
 
 const reviewProblem = async (req, res) => {
   try {
-    const problem = await Problem.findById(req.params.id);
+    const problem = await Problem.findOne({
+      _id: req.params.id,
+      userId: req.user.id,
+    });
 
     if (!problem) {
       return res.status(404).json({ message: "Problem not found" });
@@ -82,6 +86,7 @@ const getDueProblems = async (req, res) => {
     );
 
     const problems = await Problem.find({
+      userId: req.user.id,
       nextReviewDate: { $gte: startOfDay, $lte: endOfDay },
     });
 
