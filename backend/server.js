@@ -19,9 +19,26 @@ app.use(express.json());
 app.use("/api/problems", problemRoutes);
 
 const PORT = process.env.PORT || 5000;
+const DEFAULT_MONGO_URI = "mongodb://127.0.0.1:27017/leetcode-helper";
+
+const rawMongoUri = (process.env.MONGO_URI || "").trim();
+const hasPlaceholderMongoUri =
+  !rawMongoUri ||
+  rawMongoUri.includes("...") ||
+  rawMongoUri.includes("your-") ||
+  rawMongoUri.includes("<") ||
+  rawMongoUri.includes(">");
+
+const mongoUri = hasPlaceholderMongoUri ? DEFAULT_MONGO_URI : rawMongoUri;
+
+if (hasPlaceholderMongoUri) {
+  console.warn(
+    "MONGO_URI is missing or appears to be a placeholder. Falling back to local MongoDB at mongodb://127.0.0.1:27017/leetcode-helper"
+  );
+}
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(mongoUri)
   .then(() => {
     console.log("Connected to MongoDB");
     startCron();
@@ -31,5 +48,10 @@ mongoose
   })
   .catch((error) => {
     console.error("MongoDB connection error:", error.message);
+    if (hasPlaceholderMongoUri) {
+      console.error(
+        "Tip: set MONGO_URI in backend/.env to a valid MongoDB Atlas URI if you do not want to use local MongoDB."
+      );
+    }
     process.exit(1);
   });
