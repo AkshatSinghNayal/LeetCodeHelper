@@ -21,6 +21,65 @@
   margin-top: 0.25rem;
 }
 
+/* ── Auth Card ── */
+.auth-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 0 auto 2rem;
+  max-width: 420px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+  color: #1e3a5f;
+  text-align: center;
+}
+
+.auth-toggle {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.auth-toggle-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+}
+
+/* ── Header user info ── */
+.header-user {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.header-user-name {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* ── Form ── */
 .form-card {
   background: #ffffff;
