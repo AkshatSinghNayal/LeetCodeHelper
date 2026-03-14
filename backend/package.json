@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "migrate:legacy-problems": "node scripts/migrateLegacyProblemsToUser.js"
+    "migrate:legacy-problems": "node scripts/migrateLegacyProblemsToUser.js",
+    "generate:jwt-secret": "node -e \"console.log(require('crypto').randomBytes(48).toString('hex'))\""
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

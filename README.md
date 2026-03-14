@@ -170,7 +170,37 @@ This updates only legacy problems where `userId` is missing or null.
 3. Set the **Root Directory** to `backend`
 4. Set **Build Command**: `npm install`
 5. Set **Start Command**: `npm start`
-6. Add environment variables: `PORT`, `MONGO_URI`, `EMAIL_USER`, `EMAIL_PASS`, `CLIENT_URL`
+6. Add environment variables: `PORT`, `MONGO_URI`, `EMAIL_USER`, `EMAIL_PASS`, `CLIENT_URL`, `JWT_SECRET`
+
+Required Render backend environment template:
+
+```env
+PORT=5000
+MONGO_URI=your-mongodb-uri
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+CLIENT_URL=https://your-frontend-domain.vercel.app
+JWT_SECRET=your-long-random-secret
+```
+
+Generate a strong JWT secret locally:
+
+```bash
+cd backend
+npm run generate:jwt-secret
+```
+
+Post-deploy backend verification:
+
+```bash
+curl https://your-render-backend-url.onrender.com/health
+```
+
+Expected response:
+
+```json
+{"status":"ok"}
+```
 
 ### Deploy Frontend to Vercel
 
@@ -202,6 +232,7 @@ This updates only legacy problems where `userId` is missing or null.
 | Development | `npm run dev` | Start with nodemon (auto-reload) |
 | Production | `npm start` | Start with node |
 | Legacy migration | `npm run migrate:legacy-problems -- --email user@example.com` | Attach old problems to a user |
+| Generate JWT secret | `npm run generate:jwt-secret` | Print a strong random secret for `JWT_SECRET` |
 
 ### Frontend
 
