@@ -6,7 +6,9 @@ const getTransporter = () => {
   if (!transporter) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       throw new Error(
-        "EMAIL_USER and EMAIL_PASS environment variables are required for email service"
+        "EMAIL_USER and EMAIL_PASS environment variables are required. " +
+          "Set them in your .env file. For Gmail, use an App Password: " +
+          "https://support.google.com/accounts/answer/185833"
       );
     }
     transporter = nodemailer.createTransport({
