@@ -8,10 +8,13 @@ const { startCron } = require("./cron/scheduler");
 dotenv.config();
 
 const app = express();
+const normalizedClientUrl = (
+  process.env.CLIENT_URL || "http://localhost:5173"
+).replace(/\/+$/, "");
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: normalizedClientUrl,
   })
 );
 app.use(express.json());
