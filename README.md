@@ -14,6 +14,8 @@ A web application that reminds you to revise solved coding problems using **spac
 
 ## Features
 
+- **JWT Authentication** — register/login with secure token-based access
+- **User Isolation** — each user can only see and modify their own problems
 - **Add Solved Problems** — submit problem name, link, difficulty, pattern, and solved date
 - **Spaced Repetition** — automatic review scheduling at 3, 10, 30, and 90 day intervals
 - **Daily Email Reminders** — cron job sends an email listing problems due for review
@@ -25,13 +27,20 @@ A web application that reminds you to revise solved coding problems using **spac
 ```
 backend/
 ├── controllers/       # Route handlers
+│   ├── authController.js
 │   └── problemController.js
 ├── cron/              # Scheduled jobs
 │   └── scheduler.js
+├── middleware/         # Auth middleware
+│   └── auth.js
 ├── models/            # Mongoose schemas
-│   └── Problem.js
+│   ├── Problem.js
+│   └── User.js
 ├── routes/            # Express routes
+│   ├── authRoutes.js
 │   └── problemRoutes.js
+├── scripts/            # One-time utility scripts
+│   └── migrateLegacyProblemsToUser.js
 ├── services/          # Business logic
 │   └── emailService.js
 ├── server.js          # Entry point
@@ -59,10 +68,12 @@ frontend/
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/problems` | Add a new problem |
-| `GET` | `/api/problems` | Get all problems |
-| `POST` | `/api/problems/:id/review` | Mark a problem as revised |
-| `GET` | `/api/problems/due` | Get problems due for review today |
+| `POST` | `/api/auth/register` | Create account and return JWT |
+| `POST` | `/api/auth/login` | Login and return JWT |
+| `POST` | `/api/problems` | Add a new problem (Bearer token required) |
+| `GET` | `/api/problems` | Get current user's problems (Bearer token required) |
+| `POST` | `/api/problems/:id/review` | Mark a problem as revised (Bearer token required) |
+| `GET` | `/api/problems/due` | Get today's due problems (Bearer token required) |
 
 ## Environment Variables
 
@@ -75,6 +86,7 @@ frontend/
 | `EMAIL_USER` | Gmail address for sending reminders | `you@gmail.com` |
 | `EMAIL_PASS` | Gmail App Password | `xxxx xxxx xxxx xxxx` |
 | `CLIENT_URL` | Frontend URL (for CORS) | `http://localhost:5173` |
+| `JWT_SECRET` | Secret key used to sign JWT tokens | `use-a-long-random-secret` |
 
 ### Frontend (`frontend/.env`)
 
@@ -119,6 +131,36 @@ npm run dev
 
 The frontend will start on `http://localhost:5173` with API requests proxied to the backend.
 
+## JWT Setup Notes
+
+- Backend now fails fast on startup if `JWT_SECRET` is missing.
+- In production, set a long random `JWT_SECRET` in your backend environment variables.
+- Frontend stores `token` and `user` in `localStorage` after login/registration.
+
+## One-Time Migration For Legacy Problems
+
+If you had problems created before auth was added, those records may not have `userId` and will not appear in user-scoped APIs. Run this one-time migration to attach old records to one chosen user.
+
+### 1. Create/identify the target user
+
+- Register the account normally from the app, or use an existing user email.
+
+### 2. Preview migration (dry run)
+
+```bash
+cd backend
+npm run migrate:legacy-problems -- --email your-user@example.com --dry-run
+```
+
+### 3. Execute migration
+
+```bash
+cd backend
+npm run migrate:legacy-problems -- --email your-user@example.com
+```
+
+This updates only legacy problems where `userId` is missing or null.
+
 ## Deployment
 
 ### Deploy Backend to Render
@@ -159,6 +201,7 @@ The frontend will start on `http://localhost:5173` with API requests proxied to 
 |--------|---------|-------------|
 | Development | `npm run dev` | Start with nodemon (auto-reload) |
 | Production | `npm start` | Start with node |
+| Legacy migration | `npm run migrate:legacy-problems -- --email user@example.com` | Attach old problems to a user |
 
 ### Frontend
 

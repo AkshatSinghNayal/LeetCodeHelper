@@ -8,6 +8,14 @@ const { startCron } = require("./cron/scheduler");
 
 dotenv.config();
 
+const jwtSecret = (process.env.JWT_SECRET || "").trim();
+if (!jwtSecret) {
+  console.error(
+    "Missing JWT_SECRET in backend/.env. Set JWT_SECRET to a long random string before starting the server."
+  );
+  process.exit(1);
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
