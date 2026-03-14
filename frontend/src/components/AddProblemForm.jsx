@@ -11,6 +11,8 @@ const INITIAL_FORM = {
 
 function AddProblemForm({ onSuccess }) {
   const [form, setForm] = useState(INITIAL_FORM);
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,12 +20,30 @@ function AddProblemForm({ onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.name.trim() || !form.pattern.trim() || !form.link.trim()) {
+      setStatus({
+        type: "error",
+        message: "Please fill Problem Name, Link, and Pattern before submitting.",
+      });
+      return;
+    }
+
     try {
+      setIsSubmitting(true);
+      setStatus({ type: "", message: "" });
       await addProblem(form);
       setForm(INITIAL_FORM);
+      setStatus({ type: "success", message: "Problem added successfully." });
       if (onSuccess) onSuccess();
     } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        "Failed to add problem. Please check backend URL/env and try again.";
+      setStatus({ type: "error", message });
       console.error("Failed to add problem:", err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -98,9 +118,22 @@ function AddProblemForm({ onSuccess }) {
           </div>
         </div>
 
-        <button type="submit" className="btn-submit">
-          Add Problem
+        <button type="submit" className="btn-submit" disabled={isSubmitting}>
+          {isSubmitting ? "Adding..." : "Add Problem"}
         </button>
+
+        {status.message ? (
+          <p
+            role="status"
+            style={{
+              marginTop: "12px",
+              color: status.type === "error" ? "#b91c1c" : "#166534",
+              fontWeight: 600,
+            }}
+          >
+            {status.message}
+          </p>
+        ) : null}
       </form>
     </section>
   );
