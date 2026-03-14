@@ -167,3 +167,7 @@ The frontend will start on `http://localhost:5173` with API requests proxied to 
 | Development | `npm run dev` | Start Vite dev server |
 | Build | `npm run build` | Build for production |
 | Preview | `npm run preview` | Preview production build |
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
