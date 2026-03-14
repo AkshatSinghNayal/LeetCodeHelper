@@ -54,6 +54,7 @@ function AddProblemForm({ onSuccess }) {
               placeholder="https://leetcode.com/problems/..."
               value={form.link}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -80,6 +81,7 @@ function AddProblemForm({ onSuccess }) {
               placeholder="e.g. Two Pointers"
               value={form.pattern}
               onChange={handleChange}
+              required
             />
           </div>
 
