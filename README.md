@@ -242,6 +242,12 @@ Expected response:
 | Build | `npm run build` | Build for production |
 | Preview | `npm run preview` | Preview production build |
 
+## Contributors
+
+| Avatar | Name |
+|--------|------|
+| <img src="https://github.com/AkshatSinghNayal.png" width="40" height="40" alt="AkshatSinghNayal"> | [AkshatSinghNayal](https://github.com/AkshatSinghNayal) |
+
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
