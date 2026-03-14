@@ -34,6 +34,19 @@ function App() {
 
       <AddProblemForm onSuccess={fetchProblems} />
       <ProblemTable problems={problems} onRefresh={fetchProblems} />
+
+      <footer className="app-footer">
+        <p>
+          Built by Akshat Singh Nayal |{" "}
+          <a
+            href="https://github.com/AkshatSinghNayal/LeetCodeHelper"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub Repo
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
