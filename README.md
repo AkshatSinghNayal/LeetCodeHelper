@@ -1,127 +1,182 @@
 # DSA Revision Reminder
 
-A web application that reminds you to revise solved coding problems using **spaced repetition**. Add a problem you solved and the system automatically schedules revision reminders and sends email notifications when it is time to solve it again.
+> Never forget to revise your LeetCode problems — powered by spaced repetition.
 
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React (Vite) |
-| Backend | Node.js + Express |
-| Database | MongoDB (Atlas compatible) |
-| Email | Nodemailer (Gmail SMTP) |
-| Scheduler | node-cron |
+Track coding problems you've solved, get automatic reminders when it's time to revise them, and build long-term retention. Built with React, Node.js, and MongoDB.
 
 ## Features
 
-- **JWT Authentication** — register/login with secure token-based access
-- **User Isolation** — each user can only see and modify their own problems
-- **Add Solved Problems** — submit problem name, link, difficulty, pattern, and solved date
-- **Spaced Repetition** — automatic review scheduling at 3, 10, 30, and 90 day intervals
-- **Daily Email Reminders** — cron job sends an email listing problems due for review
-- **Dashboard** — view all problems in a table with a "Mark as Revised" button
-- **Responsive UI** — works on desktop and mobile
+| Feature | Description |
+|---------|-------------|
+| **Demo Login** | Click **"Demo Login"** to instantly explore the app with 10 pre-seeded problems — no registration needed |
+| **JWT Authentication** | Register or login with secure token-based access, each user's data is isolated |
+| **Spaced Repetition** | Auto-schedules reviews at 3, 10, 30, and 90 day intervals based on the optimal forgetting curve |
+| **Add Problems** | Log solved problems with name, link, difficulty, pattern, and date |
+| **Review Tracking** | Click "Mark as Revised" to advance to the next interval |
+| **Daily Email Reminders** | Cron job sends a morning email listing all problems due for review that day |
+| **Responsive Dashboard** | Full table view with pagination, difficulty badges, and due-date highlighting |
+
+---
+
+## Demo
+
+Click **"Demo Login"** on the sign-in page to instantly enter the app. A demo account is auto-created on first use with these pre-loaded problems:
+
+| Problem | Difficulty | Pattern | Review Count |
+|---------|:----------:|---------|:------------:|
+| Two Sum | `Easy` | Hash Map | 1 |
+| Valid Parentheses | `Easy` | Stack | 0 |
+| Merge Two Sorted Lists | `Easy` | Linked List | 0 |
+| Maximum Subarray | `Medium` | Kadane's Algorithm | 2 |
+| Binary Tree Level Order Traversal | `Medium` | BFS | 1 |
+| Longest Substring Without Repeating Characters | `Medium` | Sliding Window | 0 |
+| LRU Cache | `Medium` | Design | 1 |
+| Number of Islands | `Medium` | DFS | 0 |
+| Median of Two Sorted Arrays | `Hard` | Binary Search | 3 |
+| Trapping Rain Water | `Hard` | Two Pointers | 2 |
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Badge |
+|-------|-----------|-------|
+| Frontend | React 18 + Vite 6 | ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB) ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) |
+| Backend | Node.js + Express 4 | ![Node](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white) ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white) |
+| Database | MongoDB + Mongoose 8 | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white) |
+| Auth | bcryptjs + JWT | ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white) |
+| Emails | Nodemailer (Gmail SMTP) | ![Gmail](https://img.shields.io/badge/Gmail-EA4335?logo=gmail&logoColor=white) |
+| Scheduler | node-cron | ![Cron](https://img.shields.io/badge/Cron-000000?logo=clock&logoColor=white) |
+
+---
+
+## Demo Login
+
+The **"Demo Login"** button on the sign-in page lets anyone try the full app in one click:
+
+1. Click **"Demo Login"** on the auth form
+2. The app auto-creates a demo user (`demo@example.com`) and seeds **10 realistic LeetCode problems** with staggered review dates
+3. You're logged in immediately — no email or password needed
+4. All features work: add problems, mark revised, see due dates
+
+On subsequent clicks, the same demo account is reused (problems are not duplicated).
+
+---
 
 ## Project Structure
 
 ```
 backend/
-├── controllers/       # Route handlers
+├── controllers/          # Route handlers (auth, problems)
 │   ├── authController.js
 │   └── problemController.js
-├── cron/              # Scheduled jobs
+├── cron/                 # Scheduled job (daily email)
 │   └── scheduler.js
-├── middleware/         # Auth middleware
+├── middleware/            # JWT auth middleware
 │   └── auth.js
-├── models/            # Mongoose schemas
+├── models/               # Mongoose schemas
 │   ├── Problem.js
-│   └── User.js
-├── routes/            # Express routes
+│   ├── User.js
+│   └── CronLog.js
+├── routes/               # Express route definitions
 │   ├── authRoutes.js
 │   └── problemRoutes.js
-├── scripts/            # One-time utility scripts
+├── scripts/              # Utility scripts
 │   └── migrateLegacyProblemsToUser.js
-├── services/          # Business logic
+├── services/             # Email sending logic
 │   └── emailService.js
-├── server.js          # Entry point
-├── package.json
-└── .env.example
+├── server.js             # Application entry point
+└── package.json
 
 frontend/
 ├── src/
-│   ├── api/           # Axios API layer
+│   ├── api/              # Axios API client + interceptors
 │   │   └── problemApi.js
-│   ├── components/    # React components
+│   ├── components/       # React components
+│   │   ├── AuthForm.jsx
 │   │   ├── AddProblemForm.jsx
 │   │   └── ProblemTable.jsx
-│   ├── App.jsx
+│   ├── App.jsx           # Root component with auth flow
 │   ├── App.css
 │   ├── index.css
 │   └── main.jsx
 ├── index.html
 ├── vite.config.js
-├── package.json
-└── .env.example
+└── package.json
 ```
+
+---
 
 ## API Endpoints
 
+### Authentication
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|:----:|
+| `POST` | `/api/auth/register` | Create a new account | — |
+| `POST` | `/api/auth/login` | Login with email & password | — |
+| `POST` | `/api/auth/demo-login` | Instant demo access (creates user + seeds data on first call) | — |
+
+### Problems (all require Bearer token)
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/auth/register` | Create account and return JWT |
-| `POST` | `/api/auth/login` | Login and return JWT |
-| `POST` | `/api/problems` | Add a new problem (Bearer token required) |
-| `GET` | `/api/problems` | Get current user's problems (Bearer token required) |
-| `POST` | `/api/problems/:id/review` | Mark a problem as revised (Bearer token required) |
-| `GET` | `/api/problems/due` | Get today's due problems (Bearer token required) |
+| `GET` | `/api/problems` | Get all problems for the logged-in user |
+| `POST` | `/api/problems` | Add a new problem |
+| `POST` | `/api/problems/:id/review` | Mark a problem as revised (advances next review date) |
+| `GET` | `/api/problems/due` | Get problems due for review today |
+
+---
 
 ## Environment Variables
 
 ### Backend (`backend/.env`)
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PORT` | Server port | `5000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb+srv://user:pass@cluster.mongodb.net/dsa-reminder` |
-| `EMAIL_USER` | Gmail address for sending reminders | `you@gmail.com` |
-| `EMAIL_PASS` | Gmail App Password | `xxxx xxxx xxxx xxxx` |
-| `CLIENT_URL` | Frontend URL (for CORS) | `http://localhost:5173` |
-| `JWT_SECRET` | Secret key used to sign JWT tokens | `use-a-long-random-secret` |
+| Variable | Description | Required |
+|----------|-------------|:--------:|
+| `PORT` | Server port (default `5000`) | |
+| `MONGO_URI` | MongoDB connection string | ✅ |
+| `EMAIL_USER` | Gmail address for sending reminders | For email |
+| `EMAIL_PASS` | Gmail App Password | For email |
+| `CLIENT_URL` | Frontend URL (for CORS) | ✅ |
+| `JWT_SECRET` | Secret key for signing JWT tokens | ✅ |
 
 ### Frontend (`frontend/.env`)
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend API URL (leave empty for dev proxy) | `https://your-backend.onrender.com` |
+| Variable | Description | Required |
+|----------|-------------|:--------:|
+| `VITE_API_URL` | Backend URL (leave empty for proxy in dev) | |
 
-## Running Locally
+---
+
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB Atlas account (or local MongoDB)
-- Gmail account with [App Password](https://support.google.com/accounts/answer/185833) enabled
+- MongoDB (local or [Atlas](https://www.mongodb.com/atlas))
+- Gmail account with [App Password](https://support.google.com/accounts/answer/185833) (for email reminders)
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/AkshatSinghNayal/LeetCodeHelper.git
 cd LeetCodeHelper
 ```
 
-### 2. Setup Backend
+### 2. Backend Setup
 
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# Edit .env with your values
+# Edit .env with your MongoDB URI, JWT secret, etc.
 npm run dev
 ```
 
-The backend will start on `http://localhost:5000`.
+Server starts at `http://localhost:5000`.
 
-### 3. Setup Frontend
+### 3. Frontend Setup
 
 ```bash
 cd frontend
@@ -129,99 +184,9 @@ npm install
 npm run dev
 ```
 
-The frontend will start on `http://localhost:5173` with API requests proxied to the backend.
+App opens at `http://localhost:5173`.
 
-## JWT Setup Notes
-
-- Backend now fails fast on startup if `JWT_SECRET` is missing.
-- In production, set a long random `JWT_SECRET` in your backend environment variables.
-- Frontend stores `token` and `user` in `localStorage` after login/registration.
-
-## One-Time Migration For Legacy Problems
-
-If you had problems created before auth was added, those records may not have `userId` and will not appear in user-scoped APIs. Run this one-time migration to attach old records to one chosen user.
-
-### 1. Create/identify the target user
-
-- Register the account normally from the app, or use an existing user email.
-
-### 2. Preview migration (dry run)
-
-```bash
-cd backend
-npm run migrate:legacy-problems -- --email your-user@example.com --dry-run
-```
-
-### 3. Execute migration
-
-```bash
-cd backend
-npm run migrate:legacy-problems -- --email your-user@example.com
-```
-
-This updates only legacy problems where `userId` is missing or null.
-
-## Deployment
-
-### Deploy Backend to Render
-
-1. Push the repository to GitHub
-2. Create a new **Web Service** on [Render](https://render.com)
-3. Set the **Root Directory** to `backend`
-4. Set **Build Command**: `npm install`
-5. Set **Start Command**: `npm start`
-6. Add environment variables: `PORT`, `MONGO_URI`, `EMAIL_USER`, `EMAIL_PASS`, `CLIENT_URL`, `JWT_SECRET`
-
-Required Render backend environment template:
-
-```env
-PORT=5000
-MONGO_URI=your-mongodb-uri
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-CLIENT_URL=https://your-frontend-domain.vercel.app
-JWT_SECRET=your-long-random-secret
-```
-
-Generate a strong JWT secret locally:
-
-```bash
-cd backend
-npm run generate:jwt-secret
-```
-
-Post-deploy backend verification:
-
-```bash
-curl https://your-render-backend-url.onrender.com/health
-```
-
-Expected response:
-
-```json
-{"status":"ok"}
-```
-
-### Deploy Frontend to Vercel
-
-1. Import the repository on [Vercel](https://vercel.com)
-2. Set the **Root Directory** to `frontend`
-3. Set **Build Command**: `npm run build`
-4. Set **Output Directory**: `dist`
-5. Add environment variable: `VITE_API_URL` = your Render backend URL
-
-### Configure MongoDB Atlas
-
-1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/atlas)
-2. Create a database user
-3. Whitelist `0.0.0.0/0` for network access (or specific IPs)
-4. Copy the connection string and set it as `MONGO_URI`
-
-### Configure Gmail
-
-1. Enable 2-Step Verification on your Google Account
-2. Generate an [App Password](https://myaccount.google.com/apppasswords)
-3. Use your Gmail address as `EMAIL_USER` and the App Password as `EMAIL_PASS`
+---
 
 ## Scripts
 
@@ -229,19 +194,53 @@ Expected response:
 
 | Script | Command | Description |
 |--------|---------|-------------|
-| Development | `npm run dev` | Start with nodemon (auto-reload) |
+| Dev server | `npm run dev` | Start with nodemon (hot reload) |
 | Production | `npm start` | Start with node |
-| Legacy migration | `npm run migrate:legacy-problems -- --email user@example.com` | Attach old problems to a user |
-| Generate JWT secret | `npm run generate:jwt-secret` | Print a strong random secret for `JWT_SECRET` |
+| Generate JWT secret | `npm run generate:jwt-secret` | Print a cryptographically random secret |
+| Migrate legacy problems | `npm run migrate:legacy-problems -- --email user@example.com` | Attach old (pre-auth) problems to a user |
 
 ### Frontend
 
 | Script | Command | Description |
 |--------|---------|-------------|
-| Development | `npm run dev` | Start Vite dev server |
-| Build | `npm run build` | Build for production |
+| Dev server | `npm run dev` | Start Vite dev server |
+| Build | `npm run build` | Production build |
 | Preview | `npm run preview` | Preview production build |
+
+---
+
+## Deployment
+
+### Backend (Render)
+
+1. Push repo to GitHub
+2. Create **Web Service** on [Render](https://render.com)
+3. Root Directory: `backend`
+4. Build: `npm install`
+5. Start: `npm start`
+6. Add env vars: `PORT`, `MONGO_URI`, `EMAIL_USER`, `EMAIL_PASS`, `CLIENT_URL`, `JWT_SECRET`
+
+### Frontend (Vercel)
+
+1. Import repo on [Vercel](https://vercel.com)
+2. Root Directory: `frontend`
+3. Build: `npm run build`
+4. Output: `dist`
+5. Env: `VITE_API_URL` = your Render backend URL
+
+---
+
+## Spaced Repetition Intervals
+
+| Review Cycle | Interval After |
+|:------------:|:--------------:|
+| 1st | 3 days |
+| 2nd | 10 days |
+| 3rd | 30 days |
+| 4th+ | 90 days |
+
+---
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+[MIT](LICENSE)
