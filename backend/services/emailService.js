@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 
 let transporter;
 
-const getTransporter = () => {
+const getTransporter = async () => {
   if (!transporter) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       throw new Error(
@@ -18,6 +18,7 @@ const getTransporter = () => {
         pass: process.env.EMAIL_PASS,
       },
     });
+    await transporter.verify();
   }
   return transporter;
 };
@@ -64,9 +65,10 @@ const sendReminderEmail = async (to, problems) => {
   };
 
   try {
-    await getTransporter().sendMail(mailOptions);
+    const transporter = await getTransporter();
+    await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error("Failed to send reminder email:", error.message);
+    console.error("Failed to send reminder email:", error);
     throw error;
   }
 };

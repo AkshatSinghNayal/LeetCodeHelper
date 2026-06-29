@@ -4,7 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const problemRoutes = require("./routes/problemRoutes");
 const authRoutes = require("./routes/authRoutes");
-const { startCron } = require("./cron/scheduler");
+const { startCron, sendDueReminders } = require("./cron/scheduler");
 
 dotenv.config();
 
@@ -65,6 +65,9 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB");
     startCron();
+    sendDueReminders().catch((err) =>
+      console.error("Startup reminder check failed:", err)
+    );
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
