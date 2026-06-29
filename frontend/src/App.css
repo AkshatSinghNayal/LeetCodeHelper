@@ -52,6 +52,52 @@
   padding: 0;
 }
 
+/* ── Demo Login ── */
+.demo-section {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.demo-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.demo-divider::before,
+.demo-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.btn-demo {
+  width: 100%;
+  padding: 0.55rem 1.5rem;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-demo:hover {
+  background: #e2e8f0;
+  border-color: #64748b;
+}
+
+.btn-demo:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ── Header user info ── */
 .header-user {
   margin-top: 8px;

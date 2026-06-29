@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login, register } from "../api/problemApi";
+import { login, register, demoLogin } from "../api/problemApi";
 
 function AuthForm({ onAuthSuccess }) {
   const [mode, setMode] = useState("login"); // "login" | "register"
@@ -30,6 +30,23 @@ function AuthForm({ onAuthSuccess }) {
     } catch (err) {
       const message =
         err?.response?.data?.message || "Something went wrong. Please try again.";
+      setStatus({ type: "error", message });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setStatus({ type: "", message: "" });
+    try {
+      setIsSubmitting(true);
+      const { data } = await demoLogin();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      onAuthSuccess(data.user);
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || "Demo login failed. Please try again.";
       setStatus({ type: "error", message });
     } finally {
       setIsSubmitting(false);
@@ -116,6 +133,20 @@ function AuthForm({ onAuthSuccess }) {
           {mode === "login" ? "Register" : "Sign In"}
         </button>
       </p>
+
+      {mode === "login" && (
+        <div className="demo-section">
+          <div className="demo-divider"><span>or</span></div>
+          <button
+            type="button"
+            className="btn-demo"
+            onClick={handleDemoLogin}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Logging in..." : "Demo Login"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

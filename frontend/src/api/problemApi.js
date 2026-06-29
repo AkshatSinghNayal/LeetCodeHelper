@@ -26,6 +26,10 @@ export function login(data) {
   return api.post("/api/auth/login", data);
 }
 
+export function demoLogin() {
+  return api.post("/api/auth/demo-login");
+}
+
 export function getProblems() {
   return api.get("/api/problems");
 }
